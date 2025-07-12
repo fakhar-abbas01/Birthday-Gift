@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      overflow-x: hidden;
+      min-height: 100vh;
+      color: white;
+      position: relative;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1, h2 {
+      font-family: 'Pacifico', cursive;
+    }
+    .step { display: none; animation: fadeIn 1s ease; }
+    .step.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .btn {
+      margin-top: 1rem;
+      padding: 12px 24px;
+      background: #ff6a88;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .btn:hover {
+      background: #ff3366;
+    }
+    .heart {
+      font-size: 50px;
+      color: red;
+      cursor: pointer;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .typing {
+      font-size: 20px;
+      margin-top: 20px;
+      min-height: 60px;
+    }
+    .memories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .memories img {
+      width: 180px;
+      border-radius: 10px;
+    }
+    .share {
+      margin-top: 2rem;
+      font-size: 24px;
+    }
+    .share i {
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    /* Floating Emojis */
+    .emoji {
+      position: fixed;
+      font-size: 30px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: floatUp 3s linear forwards;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Click Sound -->
+  <audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_d4fb30460a.mp3" preload="auto"></audio>
+
+  <div class="container">
+    <div class="step active" id="step1">
+      <h1>🎂 Happy Birthday, Beautiful! 🎉</h1>
+      <p>This is a little digital gift, made with love.</p>
+      <button class="btn" onclick="nextStep()">Start the Magic</button>
+    </div>
+
+    <div class="step" id="step2">
+      <h2>What's your name, birthday star? 🌟</h2>
+      <input type="text" id="nameInput" placeholder="Type your name..." style="padding:10px; border-radius:5px;" />
+      <button class="btn" onclick="saveName()">Continue</button>
+    </div>
+
+    <div class="step" id="step3">
+      <h2>For You, <span id="userName">My Love</span></h2>
+      <p>Click the heart to feel my love 💖</p>
+      <div class="heart" onclick="showHeartMessage()">❤</div>
+      <div id="heartMessage" style="margin-top: 20px; display: none;">
+        <p>My heart beats for you, <span id="userName2">My Love</span> 💗</p>
+        <button class="btn" onclick="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <div class="step" id="step4">
+      <h2>Your Birthday Message 📝</h2>
+      <div class="typing" id="typingText"></div>
+      <button class="btn" onclick="nextStep()">Show Memories</button>
+    </div>
+
+    <div class="step" id="step5">
+      <h2>Our Special Memories 📸</h2>
+      <div class="memories">
+        <img src="c:\Users\Kamil Computer\AppData\Local\Microsoft\Windows\INetCache\IE\H7OP3DB1\Screenshot_20250712_193343_Snapchat[1].png"/>
+        <img src="c:\Users\Kamil Computer\AppData\Local\Microsoft\Windows\INetCache\IE\FKL84503\Screenshot_20250712_193328_Snapchat[1].png" />
+        <img src="c:\Users\Kamil Computer\AppData\Local\Microsoft\Windows\INetCache\IE\ZQVZS6AU\Screenshot_20250712_193617_Snapchat[1].png" />
+      </div>
+      <button class="btn" onclick="nextStep()">Final Surprise</button>
+    </div>
+
+    <div class="step" id="step6">
+      <h2>🎊 Happy Birthday, <span id="finalName">My Love</span>! 🎊</h2>
+      <p>May your day be filled with magic, joy, and everything beautiful.</p>
+      <div class="share">
+        <p>💌 Share your joy:</p>
+        <i class="fab fa-whatsapp" onclick="share('whatsapp')"></i>
+        <i class="fab fa-facebook" onclick="share('facebook')"></i>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+
+    function playClick() {
+      document.getElementById('clickSound').play();
+      dropEmoji();
+    }
+
+    function nextStep() {
+      playClick();
+      document.getElementById(`step${currentStep}`).classList.remove('active');
+      currentStep++;
+      document.getElementById(`step${currentStep}`).classList.add('active');
+      if (currentStep === 4) startTyping();
+    }
+
+    function saveName() {
+      playClick();
+      const name = document.getElementById('nameInput').value || "My Love";
+      document.getElementById('userName').textContent = name;
+      document.getElementById('userName2').textContent = name;
+      document.getElementById('finalName').textContent = name;
+      nextStep();
+    }
+
+    function showHeartMessage() {
+      playClick();
+      document.getElementById('heartMessage').style.display = 'block';
+    }
+
+    function startTyping() {
+      const text = "You are a dream come true. Your smile lights up my world. On this special day, I just want to say: I LOVE YOU 💞";
+      let i = 0;
+      const typingDiv = document.getElementById('typingText');
+      typingDiv.innerHTML = "";
+      const interval = setInterval(() => {
+        typingDiv.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 50);
+    }
+
+    function share(platform) {
+      let url = encodeURIComponent(window.location.href);
+      let text = encodeURIComponent("🎉 Check out this beautiful birthday card made with love! 💖");
+
+      if (platform === 'whatsapp') {
+        window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+      } else if (platform === 'facebook') {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+      }
+    }
+
+    function dropEmoji() {
+      const emojis = ["💖", "💘", "💝", "💓", "💞", "💕"];
+      const emoji = document.createElement('div');
+      emoji.className = 'emoji';
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + 'vw';
+      document.body.appendChild(emoji);
+      setTimeout(() => emoji.remove(), 3000);
+    }
+    
+  </script>
+</body>
+</html>
